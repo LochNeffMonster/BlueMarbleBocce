@@ -7,9 +7,7 @@ public class BallController : MonoBehaviour {
 
     public ControllerState currentState = ControllerState.Waiting;
     public Transform head;
-    private bool buttonHeld = false;
     private bool ballHeld;
-    private bool timeToThrow = false;
     public float forceMinimum = 1.0f;
     public float forceMaximum = 90.0f;
     public float forceIncrement = 1.0f;
@@ -22,21 +20,29 @@ public class BallController : MonoBehaviour {
 	void Start () {
         head = gameObject.transform.parent;
         throwForce = forceMinimum;
-        currentBall = (GameObject) GameObject.Instantiate(ballPrefab, gameObject.transform.position, gameObject.transform.rotation);
-        currentBall.transform.parent = gameObject.transform;
-        ballHeld = true;
-        currentBall.rigidbody.isKinematic = true;
-        currentState = ControllerState.HoldingBall;
-
+        currentState = ControllerState.Waiting;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        bool ballRequested = false;
+
         switch (currentState)
         {
             case ControllerState.Waiting:
+                if (GameState._gameStateInstance.getState() == State.Palino_Throw)
+                {
+                    if (!ballRequested)
+                    {
+                        ballRequested = true;
+                        setBall(GameState._gameStateInstance.requestBall());
+                        currentState = ControllerState.HoldingBall;
+                    }
+
+                }
                 break;
             case ControllerState.HoldingBall:
+                ballRequested = false;
                 if (Input.GetKeyDown("space"))
                 {
                     currentState = ControllerState.Throwing;
@@ -55,42 +61,37 @@ public class BallController : MonoBehaviour {
                 
                 break;
             case ControllerState.BallThrown:
-                if (currentBall.rigidbody.velocity == Vector3.zero)
+                //if (currentBall.rigidbody.velocity == Vector3.zero)
+                if (currentBall.rigidbody.IsSleeping())
                 {
-                    generateBall();
-                    currentState = ControllerState.HoldingBall;
+                    
+                    if (GameState._gameStateInstance.getState() != State.Game_Over) {
+                        if (!ballRequested)
+                        {
+                            ballRequested = true;
+                            GameState._gameStateInstance.addBallToSet(currentBall);
+                            GameState._gameStateInstance.updateGame();
+                            setBall(GameState._gameStateInstance.requestBall());
+                        }
+                    }
+                    else
+                    {
+                        currentState = ControllerState.Waiting;
+                    }
                 }
                 break;
         }
-        /*if (currentBall) { 
-            if (Input.GetKeyDown("space") && !buttonHeld)
-                buttonHeld = true;
-            else if (Input.GetKeyUp("space"))
-            {
-                buttonHeld = false;
-                timeToThrow = true;
-            }
-        
-            if(buttonHeld && (throwForce < forceMaximum)){
-                throwForce += forceIncrement;
-            }
-
-            
-            if (currentBall.rigidbody.velocity == Vector3.zero && ballHeld == false)
-            {
-                generateBall();
-            }
-            if(timeToThrow){
-                throwBall();
-            }
-        }*/
 	}
-    public void generateBall()
+    public void setBall(GameObject ball)
     {
-        currentBall = (GameObject)GameObject.Instantiate(ballPrefab, gameObject.transform.position, gameObject.transform.rotation);
-        currentBall.transform.parent = gameObject.transform;
-        ballHeld = true;
-        currentBall.rigidbody.isKinematic = true;
+        if (ball != null) { 
+            currentBall = ball;
+            currentBall.transform.position = gameObject.transform.position;
+            currentBall.transform.rotation = gameObject.transform.rotation;
+            currentBall.transform.parent = gameObject.transform;
+            currentBall.rigidbody.isKinematic = true;
+            currentState = ControllerState.HoldingBall;
+        }
     }
 
     public void throwBall()
@@ -98,7 +99,7 @@ public class BallController : MonoBehaviour {
         currentBall.rigidbody.isKinematic = false;
         currentBall.transform.parent = null;
         currentBall.rigidbody.AddForce(head.forward * throwForce, ForceMode.Impulse);
-        timeToThrow = false;
-        ballHeld = false;
+        // reset the force for the next ball
+        throwForce = forceMinimum;
     }
 }

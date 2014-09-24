@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+// This script is from Unity's standard assets, with the exception of the toggleMouseLock function
+
 /// MouseLook rotates the transform based on the mouse delta.
 /// Minimum and Maximum values can be used to constrain the possible rotation
 
@@ -30,34 +32,42 @@ public class MouseLook : MonoBehaviour {
 
 	float rotationY = 0F;
 
+    bool mouseLocked = false;
+
 	void Update ()
 	{
-		if (axes == RotationAxes.MouseXAndY)
-		{
-			float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
+        if (!mouseLocked) { 
+            if (axes == RotationAxes.MouseXAndY)
+		    {
+			    float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
 			
-			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-			rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
+			    rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+			    rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
 			
-			transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
-		}
-		else if (axes == RotationAxes.MouseX)
-		{
-			transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
-		}
-		else
-		{
-			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-			rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
+			    transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+		    }
+		    else if (axes == RotationAxes.MouseX)
+		    {
+			    transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+		    }
+		    else
+		    {
+			    rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+			    rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
 			
-			transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
-		}
+			    transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
+		    }
+	    }
 	}
-	
 	void Start ()
 	{
 		// Make the rigid body not change rotation
 		if (GetComponent<Rigidbody>())
 			GetComponent<Rigidbody>().freezeRotation = true;
 	}
+
+    public void toggleMouseLock()
+    {
+        mouseLocked = !mouseLocked;
+    }
 }

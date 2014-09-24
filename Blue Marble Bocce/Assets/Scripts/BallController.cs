@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+/// The Controller State component serves the purpose of throwing ball in the game world
+/// 
+/// The controller can be in the following states
 public enum ControllerState { Waiting, HoldingBall, Throwing, BallThrown}
 
 public class BallController : MonoBehaviour {
@@ -27,10 +31,11 @@ public class BallController : MonoBehaviour {
 	void Update () {
         bool ballRequested = false;
 
+        // take different actions based on the state of the controller
         switch (currentState)
         {
             case ControllerState.Waiting:
-                if (GameState._gameStateInstance.getState() == State.Palino_Throw)
+                if (GameState._gameStateInstance.getState() == State.Pallino_Throw)
                 {
                     if (!ballRequested)
                     {
@@ -56,16 +61,16 @@ public class BallController : MonoBehaviour {
                 }
                 else
                 {
-                    throwForce += forceIncrement;
+                    if(throwForce < forceMaximum)
+                        throwForce += forceIncrement;
                 }
                 
                 break;
             case ControllerState.BallThrown:
-                //if (currentBall.rigidbody.velocity == Vector3.zero)
                 if (currentBall.rigidbody.IsSleeping())
                 {
                     
-                    if (GameState._gameStateInstance.getState() != State.Game_Over) {
+                    if (GameState._gameStateInstance.getState() != State.Menu) {
                         if (!ballRequested)
                         {
                             ballRequested = true;
@@ -82,6 +87,8 @@ public class BallController : MonoBehaviour {
                 break;
         }
 	}
+
+    // set up the input object as the next ball to be thrown by the controller
     public void setBall(GameObject ball)
     {
         if (ball != null) { 
@@ -94,6 +101,7 @@ public class BallController : MonoBehaviour {
         }
     }
 
+    // throw the ball in the direction that the player is looking
     public void throwBall()
     {
         currentBall.rigidbody.isKinematic = false;
@@ -101,5 +109,11 @@ public class BallController : MonoBehaviour {
         currentBall.rigidbody.AddForce(head.forward * throwForce, ForceMode.Impulse);
         // reset the force for the next ball
         throwForce = forceMinimum;
+    }
+
+    // return the current throw power relative to the max throw force
+    public float getThrowPercent()
+    {
+        return throwForce/forceMaximum;
     }
 }

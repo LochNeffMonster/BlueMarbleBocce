@@ -52,6 +52,12 @@ public class BallController : MonoBehaviour {
                 {
                     currentState = ControllerState.Throwing;
                 }
+                if (GUI.Button(new Rect(Screen.width/2, Screen.height/2, 50, 50), "Hold to Throw"))
+                {
+                    currentState = ControllerState.Throwing;
+                    Debug.Log("Clicked the button with an image");
+                }
+                    
                 break;
             case ControllerState.Throwing:
                 if (Input.GetKeyUp("space"))
@@ -67,15 +73,16 @@ public class BallController : MonoBehaviour {
                 
                 break;
             case ControllerState.BallThrown:
-                if (currentBall.rigidbody.IsSleeping())
+                if (currentBall.rigidbody.IsSleeping() || currentBall.gameObject.tag == "OUT_OF_BOUNDS")
                 {
                     
                     if (GameState._gameStateInstance.getState() != State.Menu) {
                         if (!ballRequested)
-                        {
-                            ballRequested = true;
+                        {   
                             GameState._gameStateInstance.addBallToSet(currentBall);
                             GameState._gameStateInstance.updateGame();
+                            // request a new ball
+                            ballRequested = true;
                             setBall(GameState._gameStateInstance.requestBall());
                         }
                     }
@@ -87,6 +94,40 @@ public class BallController : MonoBehaviour {
                 break;
         }
 	}
+
+    public void OnGUI()
+    { 
+        /*
+        switch (currentState)
+        {
+            case ControllerState.HoldingBall:
+                if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2, 200, 50), "Tap to increase power"))
+                {
+                    buttonPressed = true;
+                    if (throwForce < forceMaximum){
+                        throwForce += forceIncrement;
+                    }
+
+                }
+                if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + Screen.height / 5, 100, 50), "Tap to Throw"))
+                {
+                    throwBall();
+                    currentState = ControllerState.BallThrown;
+                    buttonPressed = false;
+                }
+                break;
+            case ControllerState.Throwing:
+                if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2, 50, 50), "Let go to throw"))
+                {
+                    throwBall();
+                    currentState = ControllerState.BallThrown;
+                }
+                break;
+            default:
+                break;
+        }
+         */
+    }
 
     // set up the input object as the next ball to be thrown by the controller
     public void setBall(GameObject ball)

@@ -7,6 +7,8 @@ Project("{3E5B638A-926C-FE36-6EB2-185B7DE435CC}") = "Blue Marble Bocce", "Assemb
 EndProject
 Project("{3E5B638A-926C-FE36-6EB2-185B7DE435CC}") = "Blue Marble Bocce", "Assembly-UnityScript-firstpass.unityproj", "{05776805-FC4B-F433-BDF9-6C435901AF4F}"
 EndProject
+Project("{3E5B638A-926C-FE36-6EB2-185B7DE435CC}") = "Blue Marble Bocce", "Assembly-UnityScript.unityproj", "{B006E573-D7BC-7D7A-E3BB-EE0367100B99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,11 +27,15 @@ Global
 		{05776805-FC4B-F433-BDF9-6C435901AF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05776805-FC4B-F433-BDF9-6C435901AF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05776805-FC4B-F433-BDF9-6C435901AF4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B006E573-D7BC-7D7A-E3BB-EE0367100B99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B006E573-D7BC-7D7A-E3BB-EE0367100B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B006E573-D7BC-7D7A-E3BB-EE0367100B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B006E573-D7BC-7D7A-E3BB-EE0367100B99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																	GlobalSection(MonoDevelopProperties) = preSolution
+																										GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

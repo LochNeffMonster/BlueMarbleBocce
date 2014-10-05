@@ -180,13 +180,24 @@ public class GameState : MonoBehaviour {
     public void addBallToSet(GameObject ball)
     {
         // if there is no pallino ball yet, the input ball must be it
-        if (currentPallinoBall == null)
+        if (currentPallinoBall == null )
         {
-            currentPallinoBall = ball;
+            // make sure to give the player another pallino ball if it went out of bounds
+            if (ball.gameObject.tag != "OUT_OF_BOUNDS")
+            {
+                currentPallinoBall = ball;
+            }
+            else
+            {
+                GameObject.Destroy(ball);
+            }
+
         } 
         // add the ball to the set so that it can be used for calculating the score
         else {
-            ballSet.Add(ball);
+            // don't consider balls that are out of bounds
+            if (ball.gameObject.tag != "OUT_OF_BOUNDS")
+                ballSet.Add(ball);
             ballsThrown++;
             currentTeam.numberOfBalls--;
         }     
